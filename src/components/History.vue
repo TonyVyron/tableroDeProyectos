@@ -1,11 +1,18 @@
 <template>
   <div class="overlay">
-    <div class="pop-up">
-      <div class="pi pi-times" style="font-size: 1.5rem" @click="closePopUp"></div>
+    <div class="pop-up" :class="{ 'claseConOverflow': showExtendEta }">
+      <span> <transition name="fade">
+   <ExtendEta :idProject="project.id" v-show="showExtendEta" @close="closeExtendEta"
+  /></transition></span>
+  <button @click="closePopUp" class="btn btn-danger close-button">&times;</button>
       <div class="inline-title">
-        <h3>{{ project.project_code }}_{{ project.name }}</h3> 
+        <h3>{{ project.project_code }}_{{ project.name }}</h3>
       </div>
+      <h5>{{ project.eta }}</h5>
       <hr />
+      <button class="btn btn-outline-light" @click="openExtendEta()">
+        Extender Eta
+      </button>
       <div class="contenedor">
         <div
           v-for="(audit, index) in reversedAudited"
@@ -22,7 +29,7 @@
               <div class="inline-title">
                 <h5>Usuario:</h5>
                 <p>{{ audit.user_name }}</p>
-               </div> 
+              </div>
               <div class="col-md-12" v-html="formatAuditBody(audit)"></div>
             </div>
           </div>
@@ -35,12 +42,17 @@
 <script>
 import { computed } from "vue";
 import { useStore } from "vuex";
+import ExtendEta from "./extendEta.vue";
 
 export default {
   name: "HistoryPopUp",
   props: ["idProject"],
+  components: {
+    ExtendEta,
+  },
   data() {
     return {
+      showExtendEta: false,
       showInfo: [],
     };
   },
@@ -57,46 +69,75 @@ export default {
     },
   },
   methods: {
+    openExtendEta() {
+      this.showExtendEta = true;
+      const popupElement = document.querySelector('.popup');
+      if (popupElement) {
+        popupElement.classList.add('claseConOverflow');
+      }
+    },
+    closeExtendEta() {
+      this.showExtendEta = false;
+    },
     formatAuditBody(audit) {
       var auditBody;
 
       if (Object.keys(audit.changes).length === 0) {
-        auditBody = '<p>No hubo cambios</p>';
+        auditBody = "<p>No hubo cambios</p>";
+
+        auditBody +='<div class="wrap-value">' +
+          audit.comment +
+          "</div>";
+        
       } else {
         auditBody =
           '<table class="table table-dark table-hover">' +
-          '<thead>' +
-          '<tr>' +
-          '<td>Atributo</td>' +
-          '<td>Antigüo</td>' +
-          '<td>Nuevo</td>' +
-          '</tr>' +
-          '</thead>' +
-          '<tbody>';
+          "<thead>" +
+          "<tr>" +
+          "<td>Atributo</td>" +
+          "<td>Antigüo</td>" +
+          "<td>Nuevo</td>" +
+          "</tr>" +
+          "</thead>" +
+          "<tbody>";
 
         Object.keys(audit.changes).forEach(function (key) {
           var value = audit.changes[key];
 
           if (value !== null) {
-            if (typeof value === 'object') {
+            if (typeof value === "object") {
               auditBody +=
-                '<tr>' +
-                '<td class="td-wrap">' + key + '</td>' +
-                '<td class="td-wrap">' + value[0] + '</td>' +
-                '<td class="td-wrap">' + value[1] + '</td>' +
-                '</tr>';
+                "<tr>" +
+                '<td class="td-wrap">' +
+                key +
+                "</td>" +
+                '<td class="td-wrap">' +
+                value[0] +
+                "</td>" +
+                '<td class="td-wrap">' +
+                value[1] +
+                "</td>" +
+                "</tr>";
             } else {
               auditBody +=
-                '<tr>' +
-                '<td class="td-wrap">' + key + '</td>' +
-                '<td></td>' +
-                '<td class="td-wrap">' + value + '</td>' +
-                '</tr>';
+                "<tr>" +
+                '<td class="td-wrap">' +
+                key +
+                "</td>" +
+                "<td></td>" +
+                '<td class="td-wrap">' +
+                value +
+                "</td>" +
+                "</tr>";
             }
           }
         });
 
-        auditBody += '</tbody></table>' + '<div class="wrap-value">' + audit.comment + '</div>';
+        auditBody +=
+          "</tbody></table>" +
+          '<div class="wrap-value">' +
+          audit.comment +
+          "</div>";
       }
       return auditBody;
     },
@@ -186,7 +227,7 @@ hr {
 }
 
 .contenedor {
-  margin-top: 40px;
+  margin-top: 20px;
   width: 75%;
 }
 
@@ -246,16 +287,25 @@ hr {
   transition: all 200ms ease-in-out;
 }
 
-.pi{
-  display: flex;
-  justify-content: right;
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 2rem;
+  background: none;
+  border: none;
+  color: white;
   cursor: pointer;
 }
 
 @media only screen and (max-width: 768px) {
-  .pi{
+  .close-button { 
+    position: relative;
     justify-content: flex-start;
   }
+}
+.claseConOverflow {
+  overflow: hidden;
 }
 </style>
 

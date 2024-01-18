@@ -96,7 +96,7 @@
                       </div>
                     </div>
                   </div>
-                  <p>ETA: {{ item.created_at }}</p>
+                  <p>ETA: {{ item.eta }}</p>
                   <div class="inline">
                     <p>RAPE: {{ item.rape["name"] }}</p>
                     <div class="redonder">
@@ -124,7 +124,6 @@ import Card from "./components/Card.vue";
 import ErrorToken from "./components/errorToken.vue";
 import Header from "./components/Header.vue";
 import History from "./components/History.vue";
-import threeDots from "@/assets/icons/three-dots.svg";
 import { VueDraggable } from "vue-draggable-plus";
 import { ref, computed, watch } from "vue";
 import Cookies from "js-cookie";
@@ -274,7 +273,6 @@ export default {
     }
 
     return {
-      threeDots: threeDots,
       todoProjects,
       inProgressProjects,
       doneProjects,
