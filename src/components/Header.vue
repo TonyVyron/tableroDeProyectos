@@ -5,17 +5,6 @@
             <a class="navbar-brand" href="#">
               <img :src="logoScisa" alt="Logo de SCISA" class="navbar-logo" />
             </a>
-            <button
-              class="navbar-toggler"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#navbarNavDropdown"
-              aria-controls="navbarNavDropdown"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
-            >
-            <span ><img :src="menuScisa" alt="Logo de SCISA" class="navbar-logo" /></span>
-            </button>
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
               <ul class="navbar-nav">
                   <li class="nav-item">
@@ -35,7 +24,6 @@
 <script>
 import { ref } from "vue";
 import logoScisa from "@/assets/icons/logotipo_scisa 1.png";
-import menuDots from '@/assets/icons/menu.svg';
 
 export default {
   name: "HeaderSection",
@@ -46,11 +34,10 @@ export default {
   },
   setup() {
     const logoScisaRef = ref(logoScisa);
-    const menuScisaRef = ref(menuDots);
+
 
     return {
       logoScisa: logoScisaRef,
-      menuScisa: menuScisaRef,
     };
   },
 };
