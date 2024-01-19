@@ -74,22 +74,22 @@
                         >
                           <a
                             class="dropdown-item"
-                            @click="updateProject(item.id, 0)"
+                            @click="updatePriorityProject(item.id, 0)"
                             >Muy prioritario</a
                           >
                           <a
                             class="dropdown-item"
-                            @click="updateProject(item.id, 1)"
+                            @click="updatePriorityProject(item.id, 1)"
                             >Prioritario</a
                           >
                           <a
                             class="dropdown-item"
-                            @click="updateProject(item.id, 2)"
+                            @click="updatePriorityProject(item.id, 2)"
                             >Moderado</a
                           >
                           <a
                             class="dropdown-item"
-                            @click="updateProject(item.id, 3)"
+                            @click="updatePriorityProject(item.id, 3)"
                             >Menos prioritario</a
                           >
                         </div>
@@ -168,13 +168,13 @@ export default {
     async fetchProjects() {
       await this.$store.dispatch("fetchProjects");
     },
-    async updateProject(idProject, numberPriority) {
+    async updatePriorityProject(idProject, numberPriority) {
       const data = {
         project: {
           priority: numberPriority,
         },
       };
-      await this.$store.dispatch("updateProject", { id: idProject, data });
+      await this.$store.dispatch("updatePriorityProject", { id: idProject, data });
       await this.fetchProjects();
     },
     getPriorityClass(item) {
