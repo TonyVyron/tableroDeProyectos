@@ -58,7 +58,7 @@ export default {
 
 <style scoped>
 .navbar-logo {
-  max-height: 40px; /* Ajusta la altura máxima según tus necesidades */
+  max-height: 35px; 
 }
 .navbar {
   display: flex;
@@ -73,7 +73,7 @@ export default {
 .navbar a {
   color: white;
   padding: 2px;
-  margin-right: 9vh;
+  margin-right: 4vh;
   text-decoration: none;
 }
 .navbar img {

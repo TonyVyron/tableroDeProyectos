@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Header />
+    <Header></Header>
     <transition name="fade">
       <History
         v-show="showHistory"
@@ -133,10 +133,10 @@ export default {
   name: "App",
   components: {
     Card,
-    Header,
     VueDraggable,
     History,
     ErrorToken,
+    Header,
   },
   data() {
     return {
@@ -173,7 +173,10 @@ export default {
           priority: numberPriority,
         },
       };
-      await this.$store.dispatch("updatePriorityProject", { id: idProject, data });
+      await this.$store.dispatch("updatePriorityProject", {
+        id: idProject,
+        data,
+      });
       await this.fetchProjects();
     },
     getPriorityClass(item) {
@@ -284,10 +287,12 @@ export default {
 @import "~bootstrap/dist/css/bootstrap.css";
 body {
   background-image: url("assets/icons/Board-Version3.jpg");
-  background-size: 100% 110%;
+  background-size: cover;
+  background-position: center;
   background-repeat: no-repeat;
-  overflow: auto;
+  background-color: #141218;
 }
+
 * {
   color: white;
 }
@@ -295,12 +300,14 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 94vh;
+  height: 93vh;
 }
 
 .board {
-  padding: 0.8rem 1.2rem 1.2rem 1.2rem;
-  width: 78%;
+  padding: 0.8rem 0.8rem 1.2rem 1.2rem;
+  min-width: 78vw;
+  max-width: 78vw;
+  max-height: 90vh;
   backdrop-filter: blur(4px);
   border-radius: 0.5rem;
   overflow: auto;
@@ -308,6 +315,7 @@ body {
 }
 .projects {
   display: flex;
+  justify-content: center;
   justify-content: space-between;
 }
 
@@ -336,7 +344,6 @@ body {
   background-color: #1d1a21;
   width: 100%;
   height: 78vh;
-  resize: none;
 }
 
 .centerdiv {
