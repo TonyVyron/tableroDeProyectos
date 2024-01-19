@@ -23,12 +23,11 @@
           :key="index"
           class="line"
         >
-          <div
-            class="box"
-            @click="expandBox(index)"
-            :class="{ expanded: showInfo[index] }"
-          >
-            <h5>{{ audit.title }}</h5>
+          <div class="box" :class="{ expanded: showInfo[index] }">
+            <div class="inline-title" >
+              <h5>{{ audit.title }}</h5>
+              <button @click="expandBox(index)" class="btn btn-outline-light">▼</button>
+            </div>
             <div v-if="showInfo[index]">
               <div class="inline-title">
                 <h5>Usuario:</h5>
@@ -146,7 +145,7 @@ export default {
       this.showInfo[index] = !this.showInfo[index];
     },
     handleKeyup(e) {
-      if (e.key === "Escape") {
+      if (e.key === "Escape" && this.showExtendEta == false) {
         this.closePopUp();
       }
     },
@@ -189,7 +188,6 @@ export default {
   height: 100%;
   background: rgba(78, 78, 78, 0.404);
   z-index: 1;
-  overflow: auto;
 }
 
 .pop-up {
@@ -203,18 +201,23 @@ export default {
   border-radius: 20px;
   border: 1px solid #f4641652;
   overflow: auto;
-  min-width: 50vw;
+  min-width: 55vw;
   min-height: 60vh;
   max-width: 90vw;
   max-height: 80vh;
   box-sizing: border-box;
 }
-
+.box::-webkit-scrollbar,
+.overlay::-webkit-scrollbar {
+  width: 0;
+}
 
 .btn {
   margin: 5px;
 }
 .inline-title {
+  align-content: center;
+  align-items: center;
   display: flex;
   justify-content: space-between;
 }
@@ -274,7 +277,8 @@ hr {
   border-right: 0.1px solid #ffffff0a;
   max-height: 100px;
   min-height: 80px;
-  transition: max-height 0.3s ease;
+  transition: max-height 0.5s ease;
+  overflow: auto;
 }
 
 .box.expanded {
@@ -302,7 +306,6 @@ hr {
   color: white;
   cursor: pointer;
 }
-
 .claseConOverflow {
   overflow: hidden;
 }
