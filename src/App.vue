@@ -7,7 +7,7 @@
         :idProject="projectSeleccionado"
         @close="closeHistory"
     /></transition>
-    <transition name="fade"> <ErrorToken v-show="showError" /></transition>
+    <span><ErrorToken v-show="showError" /></span>
     <div class="centrar">
       <div class="board">
         <div class="priorities">
@@ -160,7 +160,6 @@ export default {
       const ApiUser = Cookies.get("apiUser");
       if (!token || !ApiUser) {
         this.showError = true;
-        this.$emit("error-token");
       } else {
         this.showError = false;
       }

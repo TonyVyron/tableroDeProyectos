@@ -77,21 +77,26 @@ export default {
   height: 100%;
   background-color: rgba(41, 41, 41, 0.5); 
   z-index: 999; 
+  overflow: auto;
 }
 .pop-up2 {
   padding: 30px;
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1;
-  height: 40vh;
-  width: 90vh;
   background-color: #141218;
   border-radius: 20px;
   border: 1px solid #f4641652;
   overflow: auto;
+  min-width: 40vw;
+  min-height: 40vh;
+  max-width: 60vw;
+  max-height: 70vh;
+  box-sizing: border-box;
 }
+
 .button-container {
   display: flex;
   gap: 10px;

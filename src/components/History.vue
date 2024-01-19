@@ -1,13 +1,17 @@
 <template>
   <div class="overlay">
-    <div class="pop-up" :class="{ 'claseConOverflow': showExtendEta }">
-      <span> <transition name="fade">
-   <ExtendEta :idProject="project.id" v-show="showExtendEta" @close="closeExtendEta"
-  /></transition></span>
-  <button @click="closePopUp" class="btn btn-danger close-button">&times;</button>
-      <div class="inline-title">
-        <h3>{{ project.project_code }}_{{ project.name }}</h3>
-      </div>
+    <div class="pop-up" :class="{ claseConOverflow: showExtendEta }">
+      <span>
+        <transition name="fade">
+          <ExtendEta
+            :idProject="project.id"
+            v-show="showExtendEta"
+            @close="closeExtendEta" /></transition
+      ></span>
+      <button @click="closePopUp" class="btn btn-danger close-button">
+        &times;
+      </button>
+      <h3>{{ project.project_code }}_{{ project.name }}</h3>
       <h5>{{ project.eta }}</h5>
       <hr />
       <button class="btn btn-outline-light" @click="openExtendEta()">
@@ -71,9 +75,9 @@ export default {
   methods: {
     openExtendEta() {
       this.showExtendEta = true;
-      const popupElement = document.querySelector('.popup');
+      const popupElement = document.querySelector(".popup");
       if (popupElement) {
-        popupElement.classList.add('claseConOverflow');
+        popupElement.classList.add("claseConOverflow");
       }
     },
     closeExtendEta() {
@@ -85,10 +89,7 @@ export default {
       if (Object.keys(audit.changes).length === 0) {
         auditBody = "<p>No hubo cambios</p>";
 
-        auditBody +='<div class="wrap-value">' +
-          audit.comment +
-          "</div>";
-        
+        auditBody += '<div class="wrap-value">' + audit.comment + "</div>";
       } else {
         auditBody =
           '<table class="table table-dark table-hover">' +
@@ -184,34 +185,38 @@ export default {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   background: rgba(78, 78, 78, 0.404);
   z-index: 1;
+  overflow: auto;
 }
 
 .pop-up {
-  position: absolute;
+  padding: 2rem 3rem;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1;
-  padding: 2rem 4rem 120px;
-  height: 70vh;
-  width: 60vw;
   background-color: #141218;
   border-radius: 20px;
   border: 1px solid #f4641652;
   overflow: auto;
+  min-width: 50vw;
+  min-height: 60vh;
+  max-width: 90vw;
+  max-height: 80vh;
+  box-sizing: border-box;
 }
+
 
 .btn {
   margin: 5px;
 }
 .inline-title {
-  justify-content: space-between;
   display: flex;
-  cursor: pointer;
+  justify-content: space-between;
 }
 
 .right-title {
@@ -298,12 +303,6 @@ hr {
   cursor: pointer;
 }
 
-@media only screen and (max-width: 768px) {
-  .close-button { 
-    position: relative;
-    justify-content: flex-start;
-  }
-}
 .claseConOverflow {
   overflow: hidden;
 }
