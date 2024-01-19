@@ -95,7 +95,7 @@ export default {
 .button-container {
   display: flex;
   gap: 10px;
-  justify-content: end;
+  justify-content: flex-end;
 }
 
 .btn-long {

@@ -47,6 +47,16 @@ const project = {
 				console.log("Error al actualizar los datos");
 			}
 		},
+		async updatePriorityProject({ commit }, putProject) {
+			try {
+				const api = createApi(putProject.id);
+				const response = await api.put('update_priority', putProject.data );
+				commit('setProject', response.data['project']);
+			}
+			catch (error) {
+				console.log(error);
+			}
+		},
 	},
 	getters: {
 		projectCount(state) {
