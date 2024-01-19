@@ -30,7 +30,6 @@ export default {
           
           if (!token || !ApiUser) {
             window.location.href = "http://localhost:9000/#!/sign_in";
-            clearInterval(intervalId);
           }
           clearInterval(intervalId);
         }
