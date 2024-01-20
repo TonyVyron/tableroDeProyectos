@@ -77,7 +77,6 @@ export default {
   height: 100%;
   background-color: rgba(41, 41, 41, 0.5); 
   z-index: 999; 
-  overflow: auto;
 }
 .pop-up2 {
   padding: 30px;
@@ -104,16 +103,7 @@ export default {
 }
 
 .btn-long {
-  width: 100px;
-}
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: all 200ms ease-in-out;
+  width: 70px;
 }
 
 </style>

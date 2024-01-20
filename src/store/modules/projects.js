@@ -9,7 +9,7 @@ const api = () => {
     console.log('Las cookies "thoth_token" o "apiUser" no están presentes.');
     return; 
   }
-  const apiUserObject = ApiUser ? JSON.parse(ApiUser) : null;
+  //const apiUserObject = ApiUser ? JSON.parse(ApiUser) : null;
 
   return axios.create({
     baseURL: 'http://localhost:3000/api/v1/projects',
@@ -20,7 +20,7 @@ const api = () => {
     params: {
       page: 'all',
       per_page: 'all',
-      involved_projects_by_employee: apiUserObject['employee']['id']
+      involved_projects_by_employee: 24
     }
   });
 };
