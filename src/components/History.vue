@@ -8,13 +8,18 @@
             v-show="showExtendEta"
             @close="closeExtendEta" /></transition
       ></span>
-      <button @click="closePopUp" class="btn btn-danger close-button">
-        &times;
-      </button>
-      <h3>{{ project.project_code }}_{{ project.name }}</h3>
+      <div class="inline-title">
+        <div>
+          <h3>{{ project.project_code }}_{{ project.name }}</h3>
+         
+        </div>
+        <button @click="closePopUp" class="btn btn-danger close-button">
+          &#10005;
+        </button>
+      </div> 
       <h5>{{ project.eta }}</h5>
       <hr />
-      <button class="btn btn-outline-light" @click="openExtendEta()">
+      <button v-show="project && !['No Autorizado', 'Cancelado', 'Terminado'].includes(project.state)" class="btn btn-outline-light" @click="openExtendEta()">
         Extender Eta
       </button>
       <div class="contenedor">
@@ -24,17 +29,21 @@
           class="line"
         >
           <div class="box" :class="{ expanded: showInfo[index] }">
-            <div class="inline-title" >
+            <div class="inline-title">
               <h5>{{ audit.title }}</h5>
-              <button @click="expandBox(index)" class="btn btn-outline-light">▼</button>
+              <button @click="expandBox(index)" class="btn btn-outline-light">
+                ▼
+              </button>
             </div>
+            <transition name="abajos">
             <div v-if="showInfo[index]">
               <div class="inline-title">
                 <h5>Usuario:</h5>
                 <p>{{ audit.user_name }}</p>
               </div>
               <div class="col-md-12" v-html="formatAuditBody(audit)"></div>
-            </div>
+            </div> 
+          </transition>
           </div>
         </div>
       </div>
@@ -180,6 +189,7 @@ export default {
 };
 </script>
 <style scoped>
+
 .overlay {
   position: fixed;
   top: 0;
@@ -204,7 +214,7 @@ export default {
   min-width: 55vw;
   min-height: 60vh;
   max-width: 90vw;
-  max-height: 80vh;
+  max-height: 85vh;
   box-sizing: border-box;
 }
 .box::-webkit-scrollbar,
@@ -216,18 +226,14 @@ export default {
   margin: 5px;
 }
 .inline-title {
-  align-content: center;
+  width: 100%;
   align-items: center;
   display: flex;
   justify-content: space-between;
 }
 
-.right-title {
-  display: flex;
-  flex-direction: column;
-}
-
 hr {
+  width: 100%;
   border: none;
   border: 3px solid white;
   margin: 1em 0;
@@ -285,29 +291,24 @@ hr {
   overflow: auto;
   max-height: 250px;
 }
-
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: all 200ms ease-in-out;
-}
-
 .close-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
+  margin: 0;
   font-size: 2rem;
   background: none;
   border: none;
-  color: white;
   cursor: pointer;
 }
 .claseConOverflow {
   overflow: hidden;
+}
+
+.abajos-enter-from,
+.abajos-leave-to {
+  opacity: 0;
+}
+.abajos-enter-active,
+.abajos-leave-active {
+  transition: all 0.3s ease;
 }
 </style>
 

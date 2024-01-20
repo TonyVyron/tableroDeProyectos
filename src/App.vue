@@ -33,7 +33,7 @@
             v-for="(projects, status) in {
               todo: todoProjects,
               inProgress: inProgressProjects,
-              done: doneProjects.slice(0, 5),
+              done: doneProjects,
             }"
             :key="status"
             class="cardiv"
@@ -43,72 +43,75 @@
             </h3>
             <div class="centerdiv">
               <VueDraggable :ref="`${status}Draggable`" :v-model="projects">
-                <Card
-                  v-for="item in projects"
-                  :key="item.id"
-                  :class="getPriorityClass(item)"
-                >
-                  <div class="inline">
-                    <h6>"{{ item.project_code }}_{{ item.name }}"</h6>
-                    <div class="inlineRight">
-                      <button
-                        class="btn btn-outline-light right"
-                        v-tooltip.top="item.project_type_catalog_name"
-                      >
-                        {{ typeOfProjects(item.project_type_catalog_name) }}
-                      </button>
-                      <div class="dropdown dropdown-float">
+                <transition-group name="cardsAnim">
+                  <Card
+                    v-for="item in projects"
+                    :key="item.id"
+                    :class="getPriorityClass(item)"
+                  >
+                    <div class="inline">
+                      <h6>"{{ item.project_code }}_{{ item.name }}"</h6>
+                      <div class="inlineRight">
                         <button
-                          class="btn btn-outline-light rightPriority"
-                          type="button"
-                          id="priorityDropdown"
-                          data-bs-toggle="dropdown"
-                          aria-haspopup="true"
-                          aria-expanded="false"
+                          class="btn btn-outline-light right"
+                          v-tooltip.top="item.project_type_catalog_name"
                         >
-                          {{ typeOfPriority(item.priority) }}
+                          {{ typeOfProjects(item.project_type_catalog_name) }}
                         </button>
-                        <div
-                          class="dropdown-menu"
-                          aria-labelledby="priorityDropdown"
-                        >
-                          <a
-                            class="dropdown-item"
-                            @click="updatePriorityProject(item.id, 0)"
-                            >Muy prioritario</a
+                        <div class="dropdown dropdown-float">
+                          <button
+                          :disabled="item && ['No Autorizado', 'Cancelado', 'Terminado'].includes(item.state)"
+                            class="btn btn-outline-light rightPriority"
+                            type="button"
+                            id="priorityDropdown"
+                            data-bs-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false"
                           >
-                          <a
-                            class="dropdown-item"
-                            @click="updatePriorityProject(item.id, 1)"
-                            >Prioritario</a
+                            {{ typeOfPriority(item.priority) }}
+                          </button>
+                          <div
+                            class="dropdown-menu"
+                            aria-labelledby="priorityDropdown"
                           >
-                          <a
-                            class="dropdown-item"
-                            @click="updatePriorityProject(item.id, 2)"
-                            >Moderado</a
-                          >
-                          <a
-                            class="dropdown-item"
-                            @click="updatePriorityProject(item.id, 3)"
-                            >Menos prioritario</a
-                          >
+                            <a
+                              class="dropdown-item"
+                              @click="updatePriorityProject(item.id, 0)"
+                              >Muy prioritario</a
+                            >
+                            <a
+                              class="dropdown-item"
+                              @click="updatePriorityProject(item.id, 1)"
+                              >Prioritario</a
+                            >
+                            <a
+                              class="dropdown-item"
+                              @click="updatePriorityProject(item.id, 2)"
+                              >Moderado</a
+                            >
+                            <a
+                              class="dropdown-item"
+                              @click="updatePriorityProject(item.id, 3)"
+                              >Menos prioritario</a
+                            >
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <p>ETA: {{ item.eta }}</p>
-                  <div class="inline">
-                    <p>RAPE: {{ item.rape["name"] }}</p>
-                    <div class="redonder">
-                      <button
-                        class="btn btn-outline-light"
-                        @click="openHistory(item.id)"
-                      >
-                        Historial
-                      </button>
+                    <p>ETA: {{ item.eta }}</p>
+                    <div class="inline">
+                      <p>RAPE: {{ item.rape["name"] }}</p>
+                      <div class="redonder">
+                        <button
+                          class="btn btn-outline-light"
+                          @click="openHistory(item.id)"
+                        >
+                          Historial
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                </Card>
+                  </Card>
+                </transition-group>
               </VueDraggable>
             </div>
           </div>
@@ -240,40 +243,44 @@ export default {
     const doneProjects = ref([]);
 
     watch(projects, () => {
-      todoProjects.value = filterProjects([
-        "Requerimiento",
-        "Propuesta",
-        "Autorización del Cliente",
-      ]);
-      inProgressProjects.value = filterProjects(["En Desarrollo"]);
-      doneProjects.value = filterProjects([
-        "No Autorizado",
-        "Cancelado",
-        "Terminado",
-      ]);
+      todoProjects.value = filterProjects(
+        ["Requerimiento", "Propuesta", "Autorización del Cliente"],
+        false
+      );
+      inProgressProjects.value = filterProjects(["En Desarrollo"], false);
+      doneProjects.value = filterProjects(
+        ["No Autorizado", "Cancelado", "Terminado"],
+        true,
+        5
+      );
     });
 
-    function filterProjects(states) {
+    function filterProjects(states, sortByDateOnly, limit) {
       const filteredProjects = projects.value.filter((item) =>
         states.includes(item.state)
       );
 
       const sortedProjects = filteredProjects.sort((a, b) => {
-        const priorityOrder = ["vip", "plan", "entrust", "avoid"];
-        const priorityA = priorityOrder.indexOf(a.priority);
-        const priorityB = priorityOrder.indexOf(b.priority);
-
-        if (priorityA !== priorityB) {
-          return priorityA - priorityB;
-        } else {
-          const dateA = new Date(a.created_at);
-          const dateB = new Date(b.created_at);
+        if (sortByDateOnly) {
+          const dateA = new Date(a.eta);
+          const dateB = new Date(b.eta);
           return dateB - dateA;
+        } else {
+          const priorityOrder = ["vip", "plan", "entrust", "avoid"];
+          const priorityA = priorityOrder.indexOf(a.priority);
+          const priorityB = priorityOrder.indexOf(b.priority);
+
+          if (priorityA !== priorityB) {
+            return priorityA - priorityB;
+          } else {
+            const dateA = new Date(a.eta);
+            const dateB = new Date(b.eta);
+            return dateB - dateA;
+          }
         }
       });
-      return sortedProjects;
+      return limit ? sortedProjects.slice(0, limit) : sortedProjects;
     }
-
     return {
       todoProjects,
       inProgressProjects,
@@ -343,7 +350,7 @@ body {
   border-radius: 0.5rem;
   background-color: #1d1a21;
   width: 100%;
-  height: 78vh;
+  min-height: 78vh;
 }
 
 .centerdiv {
@@ -417,5 +424,34 @@ body {
     justify-content: flex-start;
     overflow: auto;
   }
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+.fade-enter-to,
+.fade-leave-from {
+  opacity: 1;
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.4s ease;
+}
+
+.cardsAnim-enter-from,
+.cardsAnim-leave-to {
+  opacity: 0;
+  transform: translateX(-100%);
+}
+
+.cardsAnim-enter-to,
+.cardsAnim-leave-from {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.cardsAnim-enter-active,
+.cardsAnim-leave-active {
+  transition: opacity 0.4s ease, transform 0.4s ease;
 }
 </style>
